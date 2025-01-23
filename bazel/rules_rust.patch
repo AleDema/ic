@@ -1,0 +1,14 @@
+diff --git a/cargo/private/cargo_build_script.bzl b/cargo/private/cargo_build_script.bzl
+index be08907e..7aa6bb5b 100644
+--- a/cargo/private/cargo_build_script.bzl
++++ b/cargo/private/cargo_build_script.bzl
+@@ -459,6 +459,9 @@ def _cargo_build_script_impl(ctx):
+         known_variables,
+     ))
+ 
++    if toolchain.target_flag_value == "x86_64-unknown-linux-gnu":
++        env["CFLAGS"] += " --target=x86_64-linux-gnu"
++
+     tools = depset(
+         direct = [
+             script,
