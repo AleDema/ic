@@ -10600,7 +10600,6 @@ fn test_include_public_neurons_in_full_neurons() {
 
             page_number: None,
             page_size: None,
-            // TODO DO NOT MERGE, add something to the test here
             neuron_subaccounts: vec![],
         },
         caller,
