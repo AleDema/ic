@@ -158,7 +158,7 @@ jobs:
         run: |
           filter='.actualOutputs | .[] | .sha256 = .digest.hash | { "sha256", "path" }'
 
-          jq <execlog.json --slurp "$filter" -cMr > execlog-shrunk.json
+          jq <execlog.json "$filter" -cMr > execlog-shrunk.json
       - name: Upload execlog
         uses: actions/upload-artifact@v4
         with:
