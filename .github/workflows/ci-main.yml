@@ -103,16 +103,9 @@ jobs:
           BUILDEVENT_APIKEY: ${{ secrets.HONEYCOMB_API_TOKEN }}
       - name: foobar
         run: |
-          filter='map
-            (reduce . as $target
-              ([]; . +
-                ($target.actualOutputs | map
-                  (. | .sha256 = .digest.hash | { "sha256", "path" } )
-                )
-              )
-            ) | flatten'
+          filter='.actualOutputs | .[] | .sha256 = .digest.hash | { "sha256", "path" }'
 
-          jq <execlog.json --slurp "$filter" -cMr > execlog-shrunk.json
+          jq <execlog.json "$filter" -cMr > execlog-shrunk.json
       - name: Upload execlog
         uses: actions/upload-artifact@v4
         with:
