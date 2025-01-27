@@ -156,14 +156,7 @@ jobs:
 
       - name: foobar
         run: |
-          filter='map
-            (reduce . as $target
-              ([]; . +
-                ($target.actualOutputs | map
-                  (. | .sha256 = .digest.hash | { "sha256", "path" } )
-                )
-              )
-            ) | flatten'
+          filter='.actualOutputs | .[] | .sha256 = .digest.hash | { "sha256", "path" }'
 
           jq <execlog.json --slurp "$filter" -cMr > execlog-shrunk.json
       - name: Upload execlog
