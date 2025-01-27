@@ -112,7 +112,7 @@ jobs:
               )
             ) | flatten'
 
-          jq <execlog.json --slurp "$filter" -cMd > execlog-shrunk.json
+          jq <execlog.json --slurp "$filter" -cMr > execlog-shrunk.json
       - name: Upload execlog
         uses: actions/upload-artifact@v4
         with:
