@@ -10600,7 +10600,7 @@ fn test_include_public_neurons_in_full_neurons() {
 
             page_number: None,
             page_size: None,
-            neuron_subaccounts: vec![],
+            neuron_subaccounts: None,
         },
         caller,
     );
@@ -14668,7 +14668,7 @@ fn test_neuron_info_private_enforcement() {
                         include_public_neurons_in_full_neurons: None,
                         page_number: None,
                         page_size: None,
-                        neuron_subaccounts: vec![],
+                        neuron_subaccounts: None,
                     },
                     requester,
                 )

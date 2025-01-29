@@ -2266,6 +2266,7 @@ impl Governance {
         };
 
         let mut neurons_by_subaccount: BTreeSet<NeuronId> = neuron_subaccounts
+            .unwrap_or_default()
             .iter()
             .flat_map(|neuron_subaccount| {
                 Self::bytes_to_subaccount(&neuron_subaccount.subaccount)
