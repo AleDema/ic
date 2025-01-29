@@ -18,7 +18,7 @@ use ic_nns_constants::{
 use ic_nns_governance_api::pb::v1::{
     install_code::CanisterInstallMode, manage_neuron_response, CreateServiceNervousSystem,
     ExecuteNnsFunction, GetNeuronsFundAuditInfoRequest, GetNeuronsFundAuditInfoResponse,
-    InstallCodeRequest, ListNeurons, ListNeuronsResponse, MakeProposalRequest,
+    InstallCodeRequest, ListNeuronsProto, ListNeuronsResponse, MakeProposalRequest,
     ManageNeuronCommandRequest, ManageNeuronRequest, ManageNeuronResponse, NetworkEconomics,
     NnsFunction, ProposalActionRequest, ProposalInfo, Topic,
 };
@@ -830,7 +830,7 @@ pub mod nns {
                     Principal::from(sender),
                     "list_neurons",
                     // Instead of listing neurons by ID, opt for listing all neurons readable by `sender`.
-                    Encode!(&ListNeurons {
+                    Encode!(&ListNeuronsProto {
                         neuron_ids: vec![],
                         include_neurons_readable_by_caller: true,
                         include_empty_neurons_readable_by_caller: Some(true),
