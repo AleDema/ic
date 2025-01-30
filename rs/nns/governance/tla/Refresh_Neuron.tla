@@ -83,7 +83,7 @@ process ( Refresh_Neuron \in Refresh_Neuron_Process_Ids )
             if(answer.response /= Variant("Fail", UNIT)) {
                 with (b = VariantGetOrElse("BalanceQueryOk", answer.response, 0)) {
                     if(b >= MIN_STAKE) {
-                        neuron := [neuron EXCEPT ![neuron_id] = [@ EXCEPT !.cached_stake = b] ]
+                        neuron := [neuron EXCEPT ![neuron_id].cached_stake = b ]
                     };
                 };
             };
