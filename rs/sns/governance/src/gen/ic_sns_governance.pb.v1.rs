@@ -310,6 +310,9 @@ pub mod nervous_system_function {
         /// <method_name>(proposal_data: ProposalData) -> Result<String, String>
         #[prost(string, optional, tag = "5")]
         pub validator_method_name: ::core::option::Option<::prost::alloc::string::String>,
+        /// The topic this function belongs to
+        #[prost(uint64, optional, tag = "6")]
+        pub topic: ::core::option::Option<u64>,
     }
     #[derive(
         candid::CandidType,
@@ -3833,7 +3836,7 @@ pub enum NeuronPermissionType {
     /// start dissolving, stop dissolving, and increasing the dissolve delay for the neuron.
     ConfigureDissolveState = 1,
     /// The principal has permission to add additional principals to modify the neuron.
-    /// The nervous system parameter `NervousSystemParameters::neuron_grantable_permissions`
+    /// The nervous system para meter `NervousSystemParameters::neuron_grantable_permissions`
     /// determines the maximum set of privileges that a principal can grant to another principal in
     /// the given SNS.
     ManagePrincipals = 2,

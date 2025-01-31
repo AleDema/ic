@@ -1,4 +1,5 @@
 pub mod pb;
+pub mod topics;
 mod types;
 
 /// Formats the 32 bytes of a hash as a hexadecimal string. Corresponds to 64 ascii symbols.

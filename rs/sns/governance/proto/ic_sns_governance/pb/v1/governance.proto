@@ -18,7 +18,7 @@ enum NeuronPermissionType {
   NEURON_PERMISSION_TYPE_CONFIGURE_DISSOLVE_STATE = 1;
 
   // The principal has permission to add additional principals to modify the neuron.
-  // The nervous system parameter `NervousSystemParameters::neuron_grantable_permissions`
+  // The nervous system para meter `NervousSystemParameters::neuron_grantable_permissions`
   // determines the maximum set of privileges that a principal can grant to another principal in
   // the given SNS.
   NEURON_PERMISSION_TYPE_MANAGE_PRINCIPALS = 2;
@@ -275,6 +275,9 @@ message NervousSystemFunction {
     // The signature of the method must be equivalent to the following:
     // <method_name>(proposal_data: ProposalData) -> Result<String, String>
     optional string validator_method_name = 5;
+
+    // The topic this function belongs to
+    optional uint64 topic = 6;
   }
 
   oneof function_type {

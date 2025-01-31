@@ -1300,6 +1300,7 @@ impl TryFrom<&NervousSystemFunction> for ValidGenericNervousSystemFunction {
                 target_method_name,
                 validator_canister_id,
                 validator_method_name,
+                topic: _, // TODO: probably should do something with this
             })) => {
                 // Validate the target_canister_id field.
                 let target_canister_id =
@@ -3225,6 +3226,7 @@ Upgrade argument with 8 bytes and SHA256 `0a141e28323c4650`."#
             description: None,
             function_type: Some(FunctionType::GenericNervousSystemFunction(
                 GenericNervousSystemFunction {
+                    topic: None, // TODO: DO NOT MERGE: reexamine
                     target_canister_id: Some(CanisterId::from_u64(1).get()),
                     target_method_name: Some("test_method".to_string()),
                     validator_canister_id: Some(CanisterId::from_u64(1).get()),
@@ -3422,6 +3424,7 @@ Upgrade argument with 8 bytes and SHA256 `0a141e28323c4650`."#
             description: None,
             function_type: Some(FunctionType::GenericNervousSystemFunction(
                 GenericNervousSystemFunction {
+                    topic: None, // TODO: DO NOT MERGE: reexamine
                     target_canister_id: Some(CanisterId::from_u64(1).get()),
                     target_method_name: Some("test_method".to_string()),
                     validator_canister_id: Some(CanisterId::from_u64(1).get()),
@@ -3468,6 +3471,7 @@ Upgrade argument with 8 bytes and SHA256 `0a141e28323c4650`."#
                 description: None,
                 function_type: Some(FunctionType::GenericNervousSystemFunction(
                     GenericNervousSystemFunction {
+                        topic: None, // TODO: DO NOT MERGE: reexamine
                         target_canister_id: Some(CanisterId::from_u64(i as u64).get()),
                         target_method_name: Some("test_method".to_string()),
                         validator_canister_id: Some(CanisterId::from_u64(i as u64).get()),
@@ -3484,6 +3488,7 @@ Upgrade argument with 8 bytes and SHA256 `0a141e28323c4650`."#
             description: None,
             function_type: Some(FunctionType::GenericNervousSystemFunction(
                 GenericNervousSystemFunction {
+                    topic: None, // TODO: DO NOT MERGE: reexamine
                     target_canister_id: Some(CanisterId::from(u64::MAX).get()),
                     target_method_name: Some("test_method".to_string()),
                     validator_canister_id: Some(CanisterId::from_u64(u64::MAX).get()),
@@ -3926,6 +3931,7 @@ Version {
             description: None,
             function_type: Some(FunctionType::GenericNervousSystemFunction(
                 GenericNervousSystemFunction {
+                    topic: None, // TODO: DO NOT MERGE: reexamine
                     target_canister_id: Some(CanisterId::from(2).get()),
                     target_method_name: Some("test_method".to_string()),
                     validator_canister_id: Some(CanisterId::from(1).get()),
@@ -3947,6 +3953,7 @@ Version {
             description: None,
             function_type: Some(FunctionType::GenericNervousSystemFunction(
                 GenericNervousSystemFunction {
+                    topic: None, // TODO: DO NOT MERGE: reexamine
                     target_canister_id: Some(CanisterId::ic_00().get()),
                     target_method_name: Some("test_method".to_string()),
                     validator_canister_id: Some(CanisterId::from(1).get()),
@@ -3966,6 +3973,7 @@ Version {
             description: None,
             function_type: Some(FunctionType::GenericNervousSystemFunction(
                 GenericNervousSystemFunction {
+                    topic: None, // TODO: DO NOT MERGE: reexamine
                     target_canister_id: Some(CanisterId::from(1).get()),
                     target_method_name: Some("test_method".to_string()),
                     validator_canister_id: Some(CanisterId::ic_00().get()),
@@ -4914,6 +4922,7 @@ Version {
             description: None,
             function_type: Some(FunctionType::GenericNervousSystemFunction(
                 GenericNervousSystemFunction {
+                    topic: None, // TODO: DO NOT MERGE: reexamine
                     target_canister_id: Some(canister_id.get()),
                     target_method_name: Some("test_method".to_string()),
                     validator_canister_id: Some(canister_id.get()),
@@ -4970,6 +4979,7 @@ NervousSystemFunction {
                 validator_method_name: Some(
                     "test_validator_method",
                 ),
+                topic: None,
             },
         ),
     ),

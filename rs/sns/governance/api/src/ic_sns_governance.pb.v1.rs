@@ -1,3 +1,4 @@
+use crate::topics;
 use std::collections::BTreeMap;
 
 /// A principal with a particular set of permissions over a neuron.
@@ -217,6 +218,8 @@ pub struct NervousSystemFunction {
 }
 /// Nested message and enum types in `NervousSystemFunction`.
 pub mod nervous_system_function {
+    use super::*;
+
     #[derive(Default, candid::CandidType, candid::Deserialize, Debug, Clone, PartialEq)]
     pub struct GenericNervousSystemFunction {
         /// The id of the target canister that will be called to execute the proposal.
@@ -233,6 +236,8 @@ pub mod nervous_system_function {
         /// The signature of the method must be equivalent to the following:
         /// <method_name>(proposal_data: ProposalData) -> Result<String, String>
         pub validator_method_name: Option<String>,
+        /// The topic this function belongs to
+        pub topic: Option<topics::Topic>,
     }
     #[derive(candid::CandidType, candid::Deserialize, Debug, Clone, PartialEq)]
     pub enum FunctionType {

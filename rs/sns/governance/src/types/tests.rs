@@ -431,6 +431,7 @@ lazy_static! {
                     target_method_name: Some("Foo".to_string()),
                     validator_canister_id: Some(*target_canister_id),
                     validator_method_name: Some("Bar".to_string()),
+                    topic: None, // TODO: reevvalute this
                 })),
             }
         }

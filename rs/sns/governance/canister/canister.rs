@@ -30,24 +30,27 @@ use ic_sns_governance::{
     types::{Environment, HeapGrowthPotential},
     upgrade_journal::serve_journal,
 };
-use ic_sns_governance_api::pb::v1::{
-    get_running_sns_version_response::UpgradeInProgress, governance::Version,
-    ClaimSwapNeuronsRequest, ClaimSwapNeuronsResponse, FailStuckUpgradeInProgressRequest,
-    FailStuckUpgradeInProgressResponse, GetMaturityModulationRequest,
-    GetMaturityModulationResponse, GetMetadataRequest, GetMetadataResponse, GetMode,
-    GetModeResponse, GetNeuron, GetNeuronResponse, GetProposal, GetProposalResponse,
-    GetRunningSnsVersionRequest, GetRunningSnsVersionResponse,
-    GetSnsInitializationParametersRequest, GetSnsInitializationParametersResponse,
-    GetUpgradeJournalRequest, GetUpgradeJournalResponse, Governance as GovernanceApi,
-    ListNervousSystemFunctionsResponse, ListNeurons, ListNeuronsResponse, ListProposals,
-    ListProposalsResponse, ManageNeuron, ManageNeuronResponse, NervousSystemParameters,
-    RewardEvent, SetMode, SetModeResponse,
-};
 #[cfg(feature = "test")]
 use ic_sns_governance_api::pb::v1::{
     AddMaturityRequest, AddMaturityResponse, AdvanceTargetVersionRequest,
-    AdvanceTargetVersionResponse, GovernanceError, MintTokensRequest, MintTokensResponse, Neuron,
+    AdvanceTargetVersionResponse, GovernanceError, MintTokensRequest, MintTokensResponse,
     RefreshCachedUpgradeStepsRequest, RefreshCachedUpgradeStepsResponse,
+};
+use ic_sns_governance_api::{
+    pb::v1::{
+        get_running_sns_version_response::UpgradeInProgress, governance::Version,
+        ClaimSwapNeuronsRequest, ClaimSwapNeuronsResponse, FailStuckUpgradeInProgressRequest,
+        FailStuckUpgradeInProgressResponse, GetMaturityModulationRequest,
+        GetMaturityModulationResponse, GetMetadataRequest, GetMetadataResponse, GetMode,
+        GetModeResponse, GetNeuron, GetNeuronResponse, GetProposal, GetProposalResponse,
+        GetRunningSnsVersionRequest, GetRunningSnsVersionResponse,
+        GetSnsInitializationParametersRequest, GetSnsInitializationParametersResponse,
+        GetUpgradeJournalRequest, GetUpgradeJournalResponse, Governance as GovernanceApi,
+        ListNervousSystemFunctionsResponse, ListNeurons, ListNeuronsResponse, ListProposals,
+        ListProposalsResponse, ManageNeuron, ManageNeuronResponse, NervousSystemParameters,
+        RewardEvent, SetMode, SetModeResponse,
+    },
+    topics::{ListTopicsRequest, ListTopicsResponse},
 };
 use prost::Message;
 use rand::{RngCore, SeedableRng};
@@ -387,7 +390,7 @@ async fn manage_neuron(request: ManageNeuron) -> ManageNeuronResponse {
 #[cfg(feature = "test")]
 #[update]
 /// Test only feature. Update neuron parameters.
-fn update_neuron(neuron: Neuron) -> Option<GovernanceError> {
+fn update_neuron(neuron: ic_sns_governance_api::pb::v1::Neuron) -> Option<GovernanceError> {
     log!(INFO, "update_neuron");
     let governance = governance_mut();
     measure_span(governance.profiling_information, "update_neuron", || {
@@ -697,6 +700,14 @@ fn encode_metrics(w: &mut ic_metrics_encoder::MetricsEncoder<Vec<u8>>) -> std::i
     }
 
     Ok(())
+}
+
+/// Returns a list of topics
+#[query]
+async fn list_topics(_request: ListTopicsRequest) -> ListTopicsResponse {
+    ListTopicsResponse {
+        topics: Some(governance().list_topics()),
+    }
 }
 
 /// Adds maturity to a neuron for testing
