@@ -129,24 +129,42 @@ fn run_pick_commit() {
 }
 
 fn run_determine_targets(_: DetermineTargets) {
+    println!("Now choose which canisters to upgrade. You can run ./testnet/tools/nns-tools/list-new-commits.sh to see the changes for each canister.");
+
+    // Define the candidate canisters.
+    let nns_candidates = ["Governance", "Root", "SNS-WASM"];
+    let sns_candidates = ["Root", "Governance", "Swap"];
+
+    // Prepare vectors for selected releases.
+    let mut nns_canisters: Vec<String> = Vec::new();
+    let mut sns_canisters: Vec<String> = Vec::new();
+
+    // Ask about NNS canisters.
+    println!("NNS canisters:");
+    for &canister in nns_candidates.iter() {
+        if input_yes_or_no(&format!("   Release {}?", canister), false) {
+            nns_canisters.push(canister.to_string().to_lowercase());
+        }
+    }
+
+    // Ask about SNS canisters.
+    println!("SNS canisters:");
+    for &canister in sns_candidates.iter() {
+        if input_yes_or_no(&format!("   Release {}?", canister), false) {
+            sns_canisters.push(canister.to_string().to_lowercase());
+        }
+    }
+
     print_step(
         2,
         "Determine Upgrade Targets",
-        "Determine which NNS canisters and/or SNS WASMs need to be upgraded/published.
-Only those with 'interesting' changes need to be released.
-
-Required checks:
-1. Run: ./testnet/tools/nns-tools/list-new-commits.sh
-2. Check Monday team sync meeting minutes at:
-   https://docs.google.com/document/d/1CPM1RlMz6UMSUQzqvdP7EDiLMomK4YeuEV7UnxQ9DAE/edit
-
-For SNS ledger suite (ledger, archive, and index canisters):
-- Consult Financial Integrations team
-- FI team should contact NNS team Friday morning about significant changes
-- FI team should provide the 'Features' section of proposals
-- This agreement is new - you may need to remind them
-- This applies to ledger, archive, and index canisters",
+        &format!(
+            "NNS canisters selected for release: {}\nSNS canisters selected for release: {}",
+            nns_canisters.join(", "),
+            sns_canisters.join(", ")
+        ),
     );
+
     run_run_tests(RunTests);
 }
 
@@ -362,5 +380,22 @@ fn input_with_default(text: &str, default: &str) -> String {
         default.to_string()
     } else {
         input
+    }
+}
+
+fn input_yes_or_no(text: &str, default: bool) -> bool {
+    loop {
+        let input = input(&format!(
+            "{} ({})",
+            text,
+            if default { "Y/n" } else { "y/N" }
+        ));
+        if input.is_empty() {
+            return default;
+        } else if input.to_lowercase() == "y" {
+            return true;
+        } else if input.to_lowercase() == "n" {
+            return false;
+        }
     }
 }
