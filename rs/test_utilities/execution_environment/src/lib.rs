@@ -1188,6 +1188,7 @@ impl ExecutionTest {
             Labeled::new(Height::from(0), Arc::clone(&state)),
             data_certificate,
             /*certification_delegation_metadata=*/ None,
+            true,
         );
 
         self.state = Some(Arc::try_unwrap(state).unwrap());
@@ -1714,6 +1715,7 @@ impl ExecutionTest {
             Labeled::new(Height::from(0), state),
             data_certificate,
             certificate_delegation_metadata,
+            true,
         )
     }
 
