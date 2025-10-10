@@ -506,6 +506,7 @@ fn install_canister_fails_if_memory_capacity_exceeded() {
     let mut test = ExecutionTestBuilder::new()
         .with_subnet_execution_memory(memory_capacity as i64)
         .with_subnet_memory_reservation(0)
+        .with_resource_saturation_scaling(1)
         .build();
 
     let wasm = wat::parse_str(wat).unwrap();
@@ -1581,6 +1582,7 @@ fn upgrading_canister_fails_if_memory_capacity_exceeded() {
     let mut test = ExecutionTestBuilder::new()
         .with_subnet_execution_memory(memory_capacity as i64)
         .with_subnet_memory_reservation(0)
+        .with_resource_saturation_scaling(1)
         .build();
 
     let wasm = wat::parse_str(wat).unwrap();
@@ -3849,6 +3851,7 @@ fn install_does_not_reserve_cycles_when_memory_allocation_is_set() {
             .with_subnet_execution_memory(CAPACITY as i64)
             .with_subnet_memory_reservation(0)
             .with_subnet_memory_threshold(THRESHOLD as i64)
+            .with_resource_saturation_scaling(1)
             .build();
 
         test.create_canister_with_allocation(CYCLES, None, Some(THRESHOLD))
@@ -3927,6 +3930,7 @@ fn install_reserves_cycles_on_memory_grow() {
             .with_subnet_execution_memory(CAPACITY as i64)
             .with_subnet_memory_reservation(0)
             .with_subnet_memory_threshold(THRESHOLD as i64)
+            .with_resource_saturation_scaling(1)
             .build();
 
         test.create_canister_with_allocation(CYCLES, None, Some(THRESHOLD))
@@ -4000,6 +4004,7 @@ fn upgrade_reserves_cycles_on_memory_grow() {
             .with_subnet_execution_memory(CAPACITY as i64)
             .with_subnet_memory_reservation(0)
             .with_subnet_memory_threshold(THRESHOLD as i64)
+            .with_resource_saturation_scaling(1)
             .build();
 
         test.create_canister_with_allocation(CYCLES, None, Some(THRESHOLD))
@@ -4080,6 +4085,7 @@ fn install_does_not_reserve_cycles_on_system_subnet() {
         .with_subnet_execution_memory(CAPACITY as i64)
         .with_subnet_memory_reservation(0)
         .with_subnet_memory_threshold(THRESHOLD as i64)
+        .with_resource_saturation_scaling(1)
         .build();
 
     // Create a canister with a memory allocation of `THRESHOLD` bytes.
@@ -4126,6 +4132,7 @@ fn update_settings_reserves_cycles_for_memory_allocation() {
             .with_subnet_execution_memory(CAPACITY as i64)
             .with_subnet_memory_reservation(0)
             .with_subnet_memory_threshold(THRESHOLD as i64)
+            .with_resource_saturation_scaling(1)
             .build();
 
         test.create_canister_with_allocation(CYCLES, None, Some(THRESHOLD))
@@ -4257,13 +4264,13 @@ fn resource_saturation_scaling_works_in_create_canister() {
     const SCALING: u64 = 4;
 
     let mut test = ExecutionTestBuilder::new()
-        .with_subnet_execution_memory(CAPACITY as i64)
+        .with_subnet_execution_memory((SCALING * CAPACITY) as i64)
         .with_subnet_memory_reservation(0)
-        .with_subnet_memory_threshold(THRESHOLD as i64)
+        .with_subnet_memory_threshold((SCALING * THRESHOLD) as i64)
         .with_resource_saturation_scaling(SCALING as usize)
         .build();
 
-    test.create_canister_with_allocation(CYCLES, None, Some(THRESHOLD / SCALING))
+    test.create_canister_with_allocation(CYCLES, None, Some(THRESHOLD))
         .unwrap();
 
     let subnet_memory_usage =
@@ -4300,11 +4307,7 @@ fn resource_saturation_scaling_works_in_create_canister() {
         reserved_cycles,
         test.cycles_account_manager().storage_reservation_cycles(
             NumBytes::new(USAGE),
-            &ResourceSaturation::new(
-                subnet_memory_usage / SCALING,
-                THRESHOLD / SCALING,
-                CAPACITY / SCALING
-            ),
+            &ResourceSaturation::new(subnet_memory_usage, THRESHOLD, CAPACITY),
             test.subnet_size(),
             CanisterCyclesCostSchedule::Normal,
         )
@@ -4327,13 +4330,13 @@ fn resource_saturation_scaling_works_in_install_code() {
     const SCALING: u64 = 4;
 
     let mut test = ExecutionTestBuilder::new()
-        .with_subnet_execution_memory(CAPACITY as i64)
+        .with_subnet_execution_memory((SCALING * CAPACITY) as i64)
         .with_subnet_memory_reservation(0)
-        .with_subnet_memory_threshold(THRESHOLD as i64)
+        .with_subnet_memory_threshold((SCALING * THRESHOLD) as i64)
         .with_resource_saturation_scaling(SCALING as usize)
         .build();
 
-    test.create_canister_with_allocation(CYCLES, None, Some(THRESHOLD / SCALING))
+    test.create_canister_with_allocation(CYCLES, None, Some(THRESHOLD))
         .unwrap();
 
     let canister_id = test
@@ -4376,11 +4379,7 @@ fn resource_saturation_scaling_works_in_install_code() {
         reserved_cycles,
         test.cycles_account_manager().storage_reservation_cycles(
             memory_usage_after - memory_usage_before,
-            &ResourceSaturation::new(
-                subnet_memory_usage / SCALING,
-                THRESHOLD / SCALING,
-                CAPACITY / SCALING
-            ),
+            &ResourceSaturation::new(subnet_memory_usage, THRESHOLD, CAPACITY),
             test.subnet_size(),
             CanisterCyclesCostSchedule::Normal,
         )
@@ -4511,6 +4510,7 @@ fn canister_status_contains_reserved_cycles() {
         .with_subnet_execution_memory(CAPACITY as i64)
         .with_subnet_memory_reservation(0)
         .with_subnet_memory_threshold(0)
+        .with_resource_saturation_scaling(1)
         .build();
 
     let canister_id = test
@@ -4780,6 +4780,7 @@ fn upload_chunk_fails_when_subnet_memory_exceeded() {
             (default_subnet_memory_reservation.get() + chunk_size.get()) as i64
                 + canister_history_memory as i64,
         )
+        .with_resource_saturation_scaling(1)
         .build();
 
     let canister_id = test.create_canister(CYCLES);
@@ -5155,6 +5156,7 @@ fn upload_chunk_reserves_cycles() {
                 .with_subnet_execution_memory(CAPACITY)
                 .with_subnet_memory_reservation(0)
                 .with_subnet_memory_threshold(0)
+                .with_resource_saturation_scaling(1)
                 .build();
             let canister_id = test.create_canister(CYCLES);
 
@@ -5173,6 +5175,7 @@ fn upload_chunk_reserves_cycles() {
         let mut test = ExecutionTestBuilder::new()
             .with_subnet_memory_reservation(0)
             .with_subnet_memory_threshold(memory_usage_after_uploading_one_chunk + 1)
+            .with_resource_saturation_scaling(1)
             .build();
         let canister_id = test.create_canister(CYCLES);
         assert_eq!(
@@ -7410,6 +7413,7 @@ fn create_canister_memory_allocation_capacity_makes_subnet_oversubscribed() {
     let mut test = ExecutionTestBuilder::new()
         .with_subnet_execution_memory(MEMORY_CAPACITY.get() as i64)
         .with_subnet_memory_reservation(0)
+        .with_resource_saturation_scaling(1)
         .build();
     let uc = test.universal_canister().unwrap();
 
@@ -7719,6 +7723,7 @@ fn create_canister_reserves_cycles_for_memory_allocation() {
             .with_subnet_execution_memory(CAPACITY as i64)
             .with_subnet_memory_reservation(0)
             .with_subnet_memory_threshold(THRESHOLD as i64)
+            .with_resource_saturation_scaling(1)
             .build();
 
         test.create_canister_with_allocation(CYCLES, None, Some(USAGE))
