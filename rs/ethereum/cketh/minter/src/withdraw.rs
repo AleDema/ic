@@ -350,14 +350,14 @@ async fn send_transactions_batch(latest_transaction_count: Option<TransactionCou
     });
 
     let rpc_client = read_state(rpc_client);
-    let results = join_all(transactions_to_send.iter().map(|tx| {
+    let results = join_all(transactions_to_send.iter().map(async |tx| {
         rpc_client
             .send_raw_transaction(tx.raw_transaction_hex())
             .send()
+            .await
+            .reduce_with_strategy(AnyOf)
     }))
-    .await
-    .into_iter()
-    .map(|result| result.reduce_with_strategy(AnyOf));
+    .await;
 
     for (signed_tx, result) in zip(transactions_to_send, results) {
         log!(DEBUG, "Sent transaction {signed_tx:?}: {result:?}");
@@ -401,10 +401,10 @@ async fn finalize_transactions_batch() {
                     .get_transaction_receipt(*hash)
                     .with_cycles(MIN_ATTACHED_CYCLES)
                     .send()
+                    .await
+                    .reduce_with_strategy(NoReduction)
             }))
-            .await
-            .into_iter()
-            .map(|result| result.reduce_with_strategy(NoReduction));
+            .await;
             let mut receipts: BTreeMap<LedgerBurnIndex, EvmTransactionReceipt> = BTreeMap::new();
             for ((hash, withdrawal_id), result) in zip(txs_to_finalize, results) {
                 match result {
